@@ -15,10 +15,10 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
 )
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
-        await conn.run_sync(SQLModel.metadata.create_all)
+# async def init_db():
+#     async with engine.begin() as conn:
+#         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
+#         await conn.run_sync(SQLModel.metadata.create_all)
 
 async def get_session():
     async with AsyncSessionLocal() as session:
