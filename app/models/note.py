@@ -16,21 +16,19 @@ class Note(NoteBase, table=True):
     __tablename__ = "notes"
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    # 384 dimensions matching sentence-transformers (all-MiniLM-L6-v2)
+    # 384 dims — all-MiniLM-L6-v2
     embedding: Optional[List[float]] = Field(
         default=None,
         sa_column=Column(Vector(384)),
     )
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
-        sa_column_kwargs={"type_": DateTime(timezone=True)},
+        sa_type=DateTime(timezone=True),          
     )
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
-        sa_column_kwargs={
-            "type_": DateTime(timezone=True),
-            "onupdate": lambda: datetime.now(timezone.utc),
-        },
+        sa_type=DateTime(timezone=True),
+        sa_column_kwargs={"onupdate": lambda: datetime.now(timezone.utc)}, 
     )
 
     __table_args__ = (
@@ -41,11 +39,3 @@ class Note(NoteBase, table=True):
             postgresql_ops={"embedding": "vector_cosine_ops"},
         ),
     )
-
-    # “Create a PostgreSQL index on embedding using pgvector’s HNSW algorithm with cosine distance operators.”
-
-#  With this index:
-
-# DB uses ANN (Approximate Nearest Neighbor) graph traversal.
-# Very fast top-k similarity retrieval.
-# Slightly approximate (usually excellent quality, much faster latency).

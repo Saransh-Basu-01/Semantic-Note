@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -17,23 +17,23 @@ services:
       timeout: 5s
       retries: 5
 
-  api:
-    build: .
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
-      HF_HOME: /opt/hf_cache 
-    volumes:
-      - .:/app
-      - hf_cache:/opt/hf_cache
-    command: uvicorn app.main:app -host 0.0.0. --port 8000 --reload
-    depends_on:
-      db:
-        condition: service_healthy
+  # api:
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+  #     HF_HOME: /opt/hf_cache 
+  #   volumes:
+  #     - .:/app
+  #     - hf_cache:/opt/hf_cache
+  #   command: uvicorn app.main:app -host 0.0.0. --port 8000 --reload
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
 
 volumes:
   pgdata:
-  hf_cache:
+  # hf_cache:
