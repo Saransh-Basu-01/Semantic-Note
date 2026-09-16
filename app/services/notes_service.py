@@ -17,7 +17,13 @@ async def create_note(session:AsyncSession,note_in:NoteCreate)->Note:
 
     
 async def get_notes(session:AsyncSession,skip:int=0,limit:int=100):
-    result=await session.exec(select(Note).offset(skip).limit(limit))
+    statement = (
+        select(Note)
+        .order_by(Note.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    )
+    result = await session.exec(statement)
     return list(result.all())
 
 
@@ -29,7 +35,7 @@ async def get_note_by_id(session:AsyncSession,id:UUID)->Note|None:
     
 async def update_note(session:AsyncSession,id:UUID,updates:NoteUpdate):
     note=await get_note_by_id(session,id)
-    if not Note:
+    if not note:
         raise ValueError("No note found")
     data=updates.model_dump(exclude_unset=True)
     note.sqlmodel_update(data)
@@ -45,4 +51,6 @@ async def delete_note(session:AsyncSession,id:UUID)->None:
         raise ValueError("no note found")
     await session.delete(note)
     await session.commit()
-    return True
+
+
+# You don't await session.add(...) because add() is a synchronous method that only updates the in-memory unit‑of‑work / identity map — it does not do any I/O. The actual database work happens when you await session.flush() or await session.commit().

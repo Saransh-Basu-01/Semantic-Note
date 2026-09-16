@@ -1,5 +1,6 @@
 from pydantic import BaseModel,ConfigDict
 from datetime import datetime
+from uuid import UUID
 class NoteBase(BaseModel):
     title:str
     content:str
@@ -12,7 +13,7 @@ class NoteUpdate(BaseModel):
     content:str|None=None
 
 class NoteRead(NoteBase):
-    id:int
+    id:UUID
     created_at:datetime
     updated_at:datetime
     # Enables automatic mapping from SQLModel ORM objects to Pydantic responses
