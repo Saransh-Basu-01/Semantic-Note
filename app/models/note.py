@@ -39,3 +39,4 @@ class Note(NoteBase, table=True):
             postgresql_ops={"embedding": "vector_cosine_ops"},
         ),
     )
+
