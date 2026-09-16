@@ -40,3 +40,4 @@ class Note(NoteBase, table=True):
         ),
     )
 
+# SQLModel is an open-source Python library designed to act as a bridge between your SQL database and your FastAPI application
