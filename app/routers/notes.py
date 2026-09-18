@@ -54,7 +54,7 @@ async def get_note(
     "/notes/{note_id}",
     response_model=NoteRead
 )
-async def update_note(
+async def update(
     note_id:UUID,
     session:Annotated[AsyncSession,Depends(get_session)],
     payload:NoteUpdate
@@ -63,7 +63,7 @@ async def update_note(
     return updates
 
 @router.delete("/notes/{note_id}",status_code=204)
-async def delete_note(
+async def delete(
     note_id:UUID,
     session:Annotated[AsyncSession,Depends(get_session)]
 ):
