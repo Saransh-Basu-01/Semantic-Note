@@ -5,8 +5,8 @@ from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.services.notes_service import get_note_by_id,get_notes,delete_note,update_note,create_note
 from app.schemas.note import NoteCreate,NoteRead,NoteUpdate
-from app.models.note import Note
 from typing import List
+from uuid import UUID
 
 
 router=APIRouter(prefix="/semantic",tags=["semantic"])
@@ -28,8 +28,7 @@ async def create_notes(
     "/notes",
     response_model=List[NoteRead]
 )
-async def get_notes(
-    payload:NoteRead,
+async def read_notes(
     session:Annotated[AsyncSession,Depends(get_session)]
 ):
     notes=await get_notes(session=session)
@@ -41,7 +40,7 @@ async def get_notes(
     response_model=NoteRead
 )
 async def get_note(
-    note_id:int,
+    note_id:UUID,
     session:Annotated[AsyncSession,Depends(get_session)]
 ):
     note=await get_note_by_id(session=session,id=note_id)
@@ -56,7 +55,7 @@ async def get_note(
     response_model=NoteRead
 )
 async def update_note(
-    note_id:int,
+    note_id:UUID,
     session:Annotated[AsyncSession,Depends(get_session)],
     payload:NoteUpdate
 ):
@@ -65,10 +64,10 @@ async def update_note(
 
 @router.delete("/notes/{note_id}",status_code=204)
 async def delete_note(
-    note_id:int,
+    note_id:UUID,
     session:Annotated[AsyncSession,Depends(get_session)]
 ):
-    deleted=delete_note(session=session,note_id=note_id)
+    deleted=await delete_note(session=session,id=note_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Note not found")
     return None
