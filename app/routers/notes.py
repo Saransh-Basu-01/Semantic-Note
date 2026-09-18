@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies import get_session
 from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,14 +8,14 @@ from typing import List
 from uuid import UUID
 
 
-router=APIRouter(prefix="/semantic",tags=["semantic"])
+router=APIRouter(prefix="/notes",tags=["noyes"])
 
 @router.post(
     "/create",
     response_model=NoteRead,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_notes(
+async def create(
     payload:NoteCreate,
     session:Annotated[AsyncSession,Depends(get_session)]
 ):
@@ -39,7 +38,7 @@ async def read_notes(
     "/notes/{note_id}",
     response_model=NoteRead
 )
-async def get_note(
+async def read_note(
     note_id:UUID,
     session:Annotated[AsyncSession,Depends(get_session)]
 ):
@@ -56,8 +55,8 @@ async def get_note(
 )
 async def update(
     note_id:UUID,
-    session:Annotated[AsyncSession,Depends(get_session)],
-    payload:NoteUpdate
+    payload:NoteUpdate,
+    session:Annotated[AsyncSession,Depends(get_session)]
 ):
     updates=await update_note(session,note_id,payload)
     return updates
