@@ -61,12 +61,21 @@ async def update(
     updates=await update_note(session,note_id,payload)
     return updates
 
-@router.delete("/notes/{note_id}",status_code=204)
+
+
+@router.delete(
+    "/notes/{note_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 async def delete(
-    note_id:UUID,
-    session:Annotated[AsyncSession,Depends(get_session)]
+    note_id: UUID,
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
-    deleted=await delete_note(session=session,id=note_id)
-    if not deleted:
-        raise HTTPException(status_code=404, detail="Note not found")
-    return None
+    try:
+        await delete_note(session=session, id=note_id)
+        return None
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )

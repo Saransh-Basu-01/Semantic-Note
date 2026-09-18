@@ -1,14 +1,16 @@
 from fastapi import FastAPI
+from app.routers.notes import router as notes_router
 
-# Create the FastAPI application instance
-app = FastAPI()
+app = FastAPI(
+    title="Semantic Notes API",
+    description="A lightweight semantic note-taking API powered by FastAPI, SQLModel, and pgvector",
+    version="0.1.0",
+)
 
-# Define a route for the root URL using a GET method
+# Register your notes router
+app.include_router(notes_router)
+
+
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-# Define a route with a path parameter and an optional query parameter
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+async def root():
+    return {"message": "Semantic Notes API is running!"}
