@@ -16,7 +16,7 @@ async def create_note(session:AsyncSession,note_in:NoteCreate)->Note:
    
 
     
-async def get_notes(session:AsyncSession,skip:int=0,limit:int=100):
+async def get_notes(session:AsyncSession,skip:int=0,limit:int=100)->list[Note]:
     statement = (
         select(Note)
         .order_by(Note.created_at.desc())

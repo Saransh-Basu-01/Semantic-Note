@@ -24,18 +24,19 @@ async def create(
 
 
 @router.get(
-    "/notes",
+    "/read_notes",
     response_model=List[NoteRead]
 )
 async def read_notes(
-    session:Annotated[AsyncSession,Depends(get_session)]
+    session:Annotated[AsyncSession,Depends(get_session)],
+    skip: int = 0, limit: int = 100
 ):
-    notes=await get_notes(session=session)
+    notes=await get_notes(session=session,skip=skip,limit=limit)
     return notes
 
 
 @router.get(
-    "/notes/{note_id}",
+    "/read_note/{note_id}",
     response_model=NoteRead
 )
 async def read_note(
@@ -50,7 +51,7 @@ async def read_note(
 
 
 @router.patch(
-    "/notes/{note_id}",
+    "/update_note/{note_id}",
     response_model=NoteRead
 )
 async def update(
@@ -64,7 +65,7 @@ async def update(
 
 
 @router.delete(
-    "/notes/{note_id}",
+    "/delete_note/{note_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete(
