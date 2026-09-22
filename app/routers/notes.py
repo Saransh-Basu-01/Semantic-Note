@@ -8,7 +8,7 @@ from typing import List
 from uuid import UUID
 
 
-router=APIRouter(prefix="/notes",tags=["noyes"])
+router=APIRouter(prefix="/notes",tags=["notes"])
 
 @router.post(
     "/create",
