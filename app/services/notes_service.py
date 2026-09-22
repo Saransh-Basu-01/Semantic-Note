@@ -51,7 +51,7 @@ async def update_note(session:AsyncSession,id:UUID,updates:NoteUpdate)->Note:
     return note
 
 
-async def search_notes(session:AsyncSession,query:str,limit:int=5)->list[NoteSearchResult]:
+async def search_notes(session:AsyncSession,query:str,limit:int=2)->list[NoteSearchResult]:
     query_vector=await aencode_query(query)
     distance=Note.embedding.cosine_distance(query_vector)
     statement=(
