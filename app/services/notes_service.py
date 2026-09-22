@@ -50,18 +50,24 @@ async def update_note(session:AsyncSession,id:UUID,updates:NoteUpdate)->Note:
     await session.refresh(note)
     return note
 
+
 async def search_notes(session:AsyncSession,query:str,limit:int=5)->list[NoteSearchResult]:
     query_vector=await aencode_query(query)
     distance=Note.embedding.cosine_distance(query_vector)
     statement=(
-        select(Note).
-        order_by(distance.asc()).
+        select(Note,distance).
+        order_by(distance).
         limit(limit)
     )
-    await session.exec(statement)
-    
-
-
+    results=await session.exec(statement)
+    search_results=[]
+    for note,dist in results:
+        note_dict=note.dump()
+        search_results.append(
+            NoteSearchResult(**note_dict, score=dist)
+        )
+        
+    return search_results
 
 
 async def delete_note(session:AsyncSession,id:UUID)->None:
