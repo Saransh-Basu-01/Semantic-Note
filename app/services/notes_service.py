@@ -3,11 +3,14 @@ from uuid import UUID, uuid4
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.note import NoteCreate,NoteUpdate
 from sqlmodel import select 
+from app.services.embeddings import encode_note,encode_query,encode_text,aencode_note,aencode_query
 
 async def create_note(session:AsyncSession,note_in:NoteCreate)->Note:
+    embedding=await aencode_note(title=note_in.title,content=note_in.content)
     db_note=Note(
         title=note_in.title,
-        content=note_in.content
+        content=note_in.content,
+        embedding=embedding
     )
     session.add(db_note)
     await session.commit()
@@ -33,12 +36,16 @@ async def get_note_by_id(session:AsyncSession,id:UUID)->Note|None:
     return note
 
     
-async def update_note(session:AsyncSession,id:UUID,updates:NoteUpdate):
+async def update_note(session:AsyncSession,id:UUID,updates:NoteUpdate)->Note:
     note=await get_note_by_id(session,id)
     if not note:
         raise ValueError("No note found")
-    data=updates.model_dump(exclude_unset=True)
-    note.sqlmodel_update(data)
+    update_data = updates.model_dump(exclude_unset=True)
+    new_title = update_data.get("title", note.title)
+    new_content = update_data.get("content", note.content)
+    if "title" in update_data or "content" in update_data:
+        update_data["embedding"] = await aencode_note(title=new_title, content=new_content)
+    note.sqlmodel_update(update_data)
     await session.commit()
     await session.refresh(note)
     return note
