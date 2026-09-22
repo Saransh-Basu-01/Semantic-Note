@@ -56,13 +56,15 @@ async def search_notes(session:AsyncSession,query:str,limit:int=5)->list[NoteSea
     distance=Note.embedding.cosine_distance(query_vector)
     statement=(
         select(Note,distance).
+        where(Note.embedding!=None).
         order_by(distance).
         limit(limit)
     )
     results=await session.exec(statement)
+    rows=results.all()
     search_results=[]
-    for note,dist in results:
-        note_dict=note.dump()
+    for note,dist in rows:
+        note_dict=note.model_dump(exclude={"embedding"})
         search_results.append(
             NoteSearchResult(**note_dict, score=dist)
         )
