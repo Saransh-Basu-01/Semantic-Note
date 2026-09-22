@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.db import get_session
+from app.dependencies import get_session
 from app.schemas.note import NoteSearchResult
 from app.services.notes_service import search_notes
 
