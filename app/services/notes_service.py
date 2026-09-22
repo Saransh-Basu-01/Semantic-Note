@@ -1,7 +1,7 @@
 from app.models.note import Note
 from uuid import UUID, uuid4
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.schemas.note import NoteCreate,NoteUpdate
+from app.schemas.note import NoteCreate,NoteUpdate,NoteSearchResult
 from sqlmodel import select 
 from app.services.embeddings import encode_note,encode_query,encode_text,aencode_note,aencode_query
 
@@ -49,6 +49,18 @@ async def update_note(session:AsyncSession,id:UUID,updates:NoteUpdate)->Note:
     await session.commit()
     await session.refresh(note)
     return note
+
+async def search_notes(session:AsyncSession,query:str,limit:int=5)->list[NoteSearchResult]:
+    query_vector=await aencode_query(query)
+    distance=Note.embedding.cosine_distance(query_vector)
+    statement=(
+        select(Note).
+        order_by(distance.asc()).
+        limit(limit)
+    )
+    await session.exec(statement)
+    
+
 
 
 

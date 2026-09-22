@@ -20,6 +20,9 @@ class NoteRead(NoteBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class NoteSearchResult(NoteRead):
+    score:float
+
 # In Python, writing class NoteUpdate(): defines a standard Python class, not a Pydantic model. Pydantic will ignore it completely during FastAPI validation.
 
 # Fix: Inherit from BaseModel: class NoteUpdate(BaseModel):
