@@ -3,13 +3,12 @@ import requests
 
 API_URL = "http://127.0.0.1:8000"
 
-# --- CORRECT URLS AS PER YOUR ROUTER ---
-LIST_URL = f"{API_URL}/notes/read_notes"
-CREATE_URL = f"{API_URL}/notes/create"
-READ_ONE_URL = f"{API_URL}/notes/read_note"
-UPDATE_URL = f"{API_URL}/notes/update_note"
-DELETE_URL = f"{API_URL}/notes/delete_note"
-SEARCH_URL = f"{API_URL}/search/"
+
+LIST_URL = f"{API_URL}/notes"
+CREATE_URL = f"{API_URL}/notes"
+READ_ONE_URL = f"{API_URL}/notes" # + /{id}
+UPDATE_URL = f"{API_URL}/notes" # + /{id}
+DELETE_URL = f"{API_URL}/notes" # + /{id}
 
 st.set_page_config(page_title="Semantic Notes", page_icon="🧠", layout="wide")
 
