@@ -5,7 +5,6 @@ from app.routers.search import router as search_router
 app = FastAPI(
     title="Semantic Notes API",
     description="A lightweight semantic note-taking API powered by FastAPI, SQLModel, and pgvector",
-    version="0.1.0",
 )
 app.add_middleware(
     CORSMiddleware,
