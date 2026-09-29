@@ -15,12 +15,96 @@ st.set_page_config(page_title="Semantic Notes", page_icon="🧠", layout="wide")
 
 st.markdown("""
 <style>
-.stApp { background: #f8f8ff; }
-.note-card { background: white; border-radius: 20px; padding: 22px; box-shadow: 0 4px 24px rgba(102,126,234,0.08); border: 1px solid #eef0ff; margin-bottom: 16px; }
-.gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 40px; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
+
+html, body, [class*="css"], .stApp { font-family: 'Inter', sans-serif; }
+
+/* Background */
+.stApp {
+    background:
+        radial-gradient(circle at 15% 10%, rgba(102,126,234,0.14) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(118,75,162,0.12) 0%, transparent 40%),
+        #f7f7fd;
+}
+.block-container { padding-top: 2rem; max-width: 1200px; }
+
+/* Title */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    font-size: 44px;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+}
+
+/* Note cards */
+.note-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 22px 24px;
+    border: 1px solid rgba(102,126,234,0.15);
+    box-shadow: 0 4px 24px rgba(102,126,234,0.08);
+    margin-bottom: 10px;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.note-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(102,126,234,0.18);
+}
+.note-card h4 { margin: 0 0 8px 0; color: #2d2d4a; font-weight: 700; }
+.note-card p  { line-height: 1.6; margin: 0 0 10px 0; }
+.note-card small { color: #9a9ab5; }
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f0ff 100%);
+    border-right: 1px solid #eef0ff;
+}
+
+/* Buttons */
+.stButton > button, .stFormSubmitButton > button {
+    border-radius: 12px;
+    border: 1px solid #e3e6ff;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+.stButton > button:hover, .stFormSubmitButton > button:hover {
+    border-color: #667eea;
+    color: #667eea;
+    transform: translateY(-1px);
+}
+.stFormSubmitButton > button[kind="primary"], .stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    box-shadow: 0 6px 18px rgba(102,126,234,0.35);
+}
+
+/* Inputs */
+.stTextInput input, .stTextArea textarea {
+    border-radius: 12px !important;
+    border: 1px solid #e3e6ff !important;
+    background: white !important;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.15) !important;
+}
+
+/* Metric */
+[data-testid="stMetric"] {
+    background: white;
+    border-radius: 16px;
+    padding: 14px 20px;
+    border: 1px solid #eef0ff;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.06);
+    width: fit-content;
+}
 </style>
 """, unsafe_allow_html=True)
-
 def get_notes():
     try:
         r = requests.get(LIST_URL)
